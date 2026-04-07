@@ -316,6 +316,14 @@ def create(ctx, dry_run, no_send):
             f"  CC: {send_result['cc']}\n"
             f"  PDF: {send_result['pdf_size']:,} bytes"
         )
+
+        # Mark as sent in MF via tag (email_status is read-only in API)
+        try:
+            client.put(f"/billings/{billing_id}", data={"tag_names": ["SendGrid送信済み"]})
+            console.print("  [dim]MFタグ: SendGrid送信済み[/dim]")
+        except Exception:
+            pass
+
     except Exception as e:
         console.print(f"[red]メール送信エラー: {e}[/red]")
         console.print(
