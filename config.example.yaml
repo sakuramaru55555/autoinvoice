@@ -13,7 +13,11 @@ invoice:
   partner_name: "テイエス企画株式会社"
   department_name: "YIC事業部"
   title_template: "留学カウンセラー業務委託"
-  payment_condition: "銀行振込"
+  payment_condition: |-
+    PayPay銀行(0033)
+    ビジネス営業部支店(005)
+    普通　1936196
+    ロケスタ（カ
   note: ""
 
 trigger:
