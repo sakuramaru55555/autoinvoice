@@ -12,9 +12,14 @@ moneyforward:
 invoice:
   partner_name: "テイエス企画株式会社"
   department_name: "YIC事業部"
-  title_template: "{period} 業務委託料"
+  title_template: "留学カウンセラー業務委託"
   payment_condition: "銀行振込"
   note: ""
+
+trigger:
+  gmail_query: "from:hasegawa.s@tseminar.co.jp subject:月分給与 after:2026/03/31"
+  spreadsheet_id_check: "1iHoGzsu7StMGxa5eqWQHFxlNZDs37YHOUexuYQqhgGw"
+  processed_path: "credentials/processed_emails.json"
 
 mail:
   to: "ariga.j@tseminar.co.jp"
