@@ -21,6 +21,10 @@ trigger:
   spreadsheet_id_check: "1iHoGzsu7StMGxa5eqWQHFxlNZDs37YHOUexuYQqhgGw"
   processed_path: "credentials/processed_emails.json"
 
+sendgrid:
+  api_key: "${SENDGRID_API_KEY}"
+  from_email: "hasegawa@rockesta.com"
+
 mail:
   to: "ariga.j@tseminar.co.jp"
   cc: "hasegawa.s@tseminar.co.jp"

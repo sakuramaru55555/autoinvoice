@@ -293,8 +293,8 @@ def create(ctx, dry_run, no_send):
         )
         return
 
-    # Step 6: Send invoice
-    console.print("[bold]Step 6:[/bold] 請求書を送信...")
+    # Step 6: Send invoice via SendGrid (server-side, no browser needed)
+    console.print("[bold]Step 6:[/bold] PDF取得 → SendGrid送信...")
     try:
         send_result = send_invoice_mail(
             client,
@@ -307,12 +307,19 @@ def create(ctx, dry_run, no_send):
             body=cfg.mail_body_template.format(
                 period=record.billing_period
             ),
+            sendgrid_api_key=cfg.sendgrid_api_key,
+            from_email=cfg.sendgrid_from_email,
         )
-        console.print("[green]✓ 請求書を送信しました！[/green]")
-    except Exception as e:
-        console.print(f"[yellow]⚠ メール送信に失敗しました: {e}[/yellow]")
         console.print(
-            "[dim]MoneyForwardの管理画面から手動で送信してください。[/dim]"
+            f"[green]✓ 請求書をメール送信しました！[/green]\n"
+            f"  To: {send_result['to']}\n"
+            f"  CC: {send_result['cc']}\n"
+            f"  PDF: {send_result['pdf_size']:,} bytes"
+        )
+    except Exception as e:
+        console.print(f"[red]メール送信エラー: {e}[/red]")
+        console.print(
+            f"[dim]MF管理画面: https://invoice.moneyforward.com/billings/{billing_id}[/dim]"
         )
 
 

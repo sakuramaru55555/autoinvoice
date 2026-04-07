@@ -116,6 +116,16 @@ class Config:
     def invoice_note(self) -> str:
         return self._data["invoice"].get("note", "")
 
+    # --- SendGrid ---
+
+    @property
+    def sendgrid_api_key(self) -> str:
+        return self._data.get("sendgrid", {}).get("api_key", "")
+
+    @property
+    def sendgrid_from_email(self) -> str:
+        return self._data.get("sendgrid", {}).get("from_email", "")
+
     # --- Trigger ---
 
     @property
