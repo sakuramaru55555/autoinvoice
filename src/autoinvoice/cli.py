@@ -173,7 +173,7 @@ def create(ctx, dry_run, no_send):
     from autoinvoice.moneyforward.client import MFClient
     from autoinvoice.moneyforward.invoices import create_invoice
     from autoinvoice.moneyforward.mail import send_invoice_mail
-    from autoinvoice.moneyforward.partners import find_partner, get_department_id
+    from autoinvoice.moneyforward.partners import find_partner
     from autoinvoice.sheets.parser import parse_latest_payroll
     from autoinvoice.sheets.reader import SheetReader
 
@@ -239,14 +239,19 @@ def create(ctx, dry_run, no_send):
     )
     client = MFClient(auth_manager)
 
-    # Step 4: Find partner
+    # Step 4: Find partner + department (includes email from MF master)
     console.print("[bold]Step 4:[/bold] 取引先を検索中...")
     try:
+        from autoinvoice.moneyforward.partners import get_department
         partner = find_partner(client, cfg.partner_name)
-        dept_id = get_department_id(client, partner["id"])
+        dept = get_department(client, partner["id"])
+        dept_id = dept["id"]
+        mail_to = dept.get("email", cfg.mail_to)
+        mail_cc = dept.get("cc_emails", cfg.mail_cc)
         console.print(
-            f"  取引先: {partner['name']} (部門ID: {dept_id})"
+            f"  取引先: {partner['name']} / {dept.get('person_dept', '')}"
         )
+        console.print(f"  送信先: {mail_to}  CC: {mail_cc}")
     except Exception as e:
         console.print(f"[red]取引先検索エラー: {e}[/red]")
         sys.exit(1)
@@ -294,8 +299,8 @@ def create(ctx, dry_run, no_send):
         send_result = send_invoice_mail(
             client,
             billing_id,
-            to=cfg.mail_to,
-            cc=cfg.mail_cc,
+            to=mail_to,
+            cc=mail_cc,
             subject=cfg.mail_subject_template.format(
                 period=record.billing_period
             ),

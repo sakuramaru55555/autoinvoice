@@ -41,12 +41,16 @@ def find_partner(client: MFClient, partner_name: str) -> dict:
     raise ValueError(f"取引先 '{partner_name}' が見つかりませんでした")
 
 
-def get_department_id(
+def get_department(
     client: MFClient,
     partner_id: str,
     department_name: str | None = None,
-) -> str:
-    """Get the department ID for a partner."""
+) -> dict:
+    """Get department info for a partner.
+
+    Returns the full department dict including:
+      id, email, cc_emails, person_name, person_dept, etc.
+    """
     resp = client.get(f"/partners/{partner_id}")
 
     partner = resp.get("data", resp)
@@ -61,8 +65,17 @@ def get_department_id(
     if department_name:
         for dept in departments:
             if dept.get("person_dept") == department_name:
-                return dept["id"]
+                return dept
             if dept.get("name") == department_name:
-                return dept["id"]
+                return dept
 
-    return departments[0]["id"]
+    return departments[0]
+
+
+def get_department_id(
+    client: MFClient,
+    partner_id: str,
+    department_name: str | None = None,
+) -> str:
+    """Get the department ID for a partner (convenience wrapper)."""
+    return get_department(client, partner_id, department_name)["id"]
