@@ -116,6 +116,28 @@ class Config:
     def invoice_note(self) -> str:
         return self._data["invoice"].get("note", "")
 
+    # --- Trigger ---
+
+    @property
+    def gmail_query(self) -> str:
+        return self._data.get("trigger", {}).get(
+            "gmail_query",
+            "from:hasegawa.s@tseminar.co.jp subject:月分給与 after:2026/03/31",
+        )
+
+    @property
+    def spreadsheet_id_check(self) -> str:
+        return self._data.get("trigger", {}).get(
+            "spreadsheet_id_check", self.spreadsheet_id
+        )
+
+    @property
+    def processed_path(self) -> str:
+        raw = self._data.get("trigger", {}).get(
+            "processed_path", "credentials/processed_emails.json"
+        )
+        return _resolve_path(self._base_dir, raw)
+
     # --- Mail ---
 
     @property
