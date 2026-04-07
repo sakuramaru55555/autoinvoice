@@ -200,19 +200,33 @@ def create(ctx, dry_run, no_send):
         console.print(f"[red]スプレッドシート読み込みエラー: {e}[/red]")
         sys.exit(1)
 
-    # Step 2: Display and confirm data
-    console.print("[bold]Step 2:[/bold] データ確認")
+    # Step 2: Auto-validate amounts
+    console.print("[bold]Step 2:[/bold] 金額検証")
     display_payroll(record)
-    display_invoice_preview(
-        record, cfg.partner_name, cfg.department_name, cfg.mail_to, cfg.mail_cc
+
+    from autoinvoice.invoice_builder import _find_transport_pretax, _mf_total
+
+    transport_pretax = (
+        _find_transport_pretax(record.total_salary, record.total_transport, record.grand_total)
+        if record.total_transport > 0
+        else 0
     )
+    computed_total = _mf_total(record.total_salary + transport_pretax)
+
+    if computed_total != record.grand_total:
+        console.print(
+            f"[red]✗ 金額不一致: 計算合計 ¥{computed_total:,} vs スプシ ¥{record.grand_total:,}[/red]"
+        )
+        console.print("[red]  自動作成を中止します。手動で確認してください。[/red]")
+        sys.exit(1)
+
+    console.print(f"  [green]✓ 金額一致: ¥{record.grand_total:,}[/green]")
 
     if dry_run:
+        display_invoice_preview(
+            record, cfg.partner_name, cfg.department_name, cfg.mail_to, cfg.mail_cc
+        )
         console.print("[yellow]--dry-run: プレビューのみ。終了します。[/yellow]")
-        return
-
-    if not confirm("この内容で請求書を作成しますか？"):
-        console.print("[yellow]キャンセルしました。[/yellow]")
         return
 
     # Step 3: Connect to MoneyForward
