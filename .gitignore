@@ -1,0 +1,23 @@
+# Credentials & tokens
+credentials/
+*.json
+!config.example.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Config with secrets
+config.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store

@@ -1,0 +1,31 @@
+google_sheets:
+  spreadsheet_id: "1iHoGzsu7StMGxa5eqWQHFxlNZDs37YHOUexuYQqhgGw"
+  worksheet_gid: 816958467
+  service_account_path: "credentials/google_service_account.json"
+
+moneyforward:
+  client_id: "${MF_CLIENT_ID}"
+  client_secret: "${MF_CLIENT_SECRET}"
+  redirect_uri: "http://localhost:38080/callback"
+  token_path: "credentials/mf_tokens.json"
+
+invoice:
+  partner_name: "テイエス企画株式会社"
+  department_name: "YIC事業部"
+  title_template: "{period} 業務委託料"
+  payment_condition: "銀行振込"
+  note: ""
+
+mail:
+  to: "ariga.j@tseminar.co.jp"
+  cc: "hasegawa.s@tseminar.co.jp"
+  subject_template: "請求書送付のご案内（{period}分）"
+  body_template: |
+    テイエス企画株式会社
+    YIC事業部 有賀 淳子 様
+
+    いつもお世話になっております。
+    長谷川清子です。
+
+    {period}分の請求書をお送りいたします。
+    ご確認のほどよろしくお願いいたします。
